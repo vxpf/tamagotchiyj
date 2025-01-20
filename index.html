@@ -7,18 +7,27 @@
     <link rel="stylesheet" href="style.css">    
 </head>
 <body>
-
     <header>
+        
+        <button class="pause-button" onclick="togglePause()">⏸️ Pause</button>
         <button class="mute-button" onclick="toggleMute()">
             <img id="mute-icon" src="unmute-icon.png" alt="Mute/Unmute">
         </button>
     </header>
 
 
+    <section id="pause-menu" class="modal">
+        <section class="modal-content">
+            <h2>Pause Menu</h2>
+            <button onclick="goToHome()">Return to Home</button>
+            <button onclick="resumeGame()">Resume Game</button>
+        </section>
+    </section>
 
     <section class="chatbox">   
         <p id="tamagotchi-chat">Hello, I'm your Tamagotchi! How are you today?</p>
     </section>
+    
     <section class="tamagotchi-container">
         <section class="screen">
             <img id="tamagotchi-image" src="StartTM.png" alt="Tamagotchi">
@@ -67,9 +76,18 @@
     <section class="achievements">
         <h2>Achievements</h2>
         <ul id="achievement-list">
-          
+            <li class="locked">🔒 First Meal</li>
+            <li class="locked">🔒 Playtime Beginner</li>
+            <li class="locked">🔒 Good Night's Sleep</li>
+            <li class="locked">🔒 Hungry No More</li>
+            <li class="locked">🔒 Playtime Pro</li>
+            <li class="locked">🔒 Sleepyhead</li>
+            <li class="locked">🔒 Master Chef</li>
+            <li class="locked">🔒 Playtime Champion</li>
+            <li class="locked">🔒 Sleep Master</li>
         </ul>
     </section>
+        
     <script src="script.js"></script>
 </body>
 </html>
