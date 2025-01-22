@@ -5,16 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tamagotchi Project</title>
     <link rel="stylesheet" href="style.css">    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <header>
-        
-        <button class="pause-button" onclick="togglePause()">⏸️ Pause</button>
+        <button class="pause-button" onclick="togglePause()"><i class="fa fa-bars"></i></button>
         <button class="mute-button" onclick="toggleMute()">
             <img id="mute-icon" src="unmute-icon.png" alt="Mute/Unmute">
         </button>
     </header>
-
 
     <section id="pause-menu" class="modal">
         <section class="modal-content">
@@ -65,13 +64,17 @@
             <button class="button" onclick="sleep()">
                 <p class="Wash">😴Sleep</p>
             </button>
+            
         </section>
+        <button id="toggle-achievements-button" class="toggle" onclick="toggleAchievements()">Toggle Achievements</button>
         <section class="game-over" id="game-over">
             <h2>Game Over!</h2>
             <p>Your Tamagotchi needs better care!</p>
             <button onclick="retry()">Retry</button>
         </section>
     </section>
+    
+    
     
     <section class="achievements">
         <h2>Achievements</h2>
@@ -86,6 +89,8 @@
             <li class="locked">🔒 Playtime Champion</li>
             <li class="locked">🔒 Sleep Master</li>
         </ul>
+
+        
     </section>
         
     <script src="script.js"></script>

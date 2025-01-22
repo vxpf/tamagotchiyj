@@ -1,27 +1,40 @@
+// ==================== Globale Variabelen ====================
 let isPaused = false;
 let gameInterval;
-let randomizeInterval; // Nieuwe variabele voor het randomizeBars-interval
+let randomizeInterval;
 
+let hunger = 10;
+let energy = 10;
+let happiness = 10;
+
+let feedCount = 0;
+let playCount = 0;
+let sleepCount = 0;
+
+let audio = new Audio('background-music.mp3');
+audio.loop = true;
+
+// ==================== Game State Management ====================
 function togglePause() {
     isPaused = !isPaused;
     const pauseMenu = document.getElementById('pause-menu');
     if (isPaused) {
         pauseMenu.style.display = 'flex';
-        clearInterval(gameInterval); // Stop het interval voor decreaseBars
-        clearInterval(randomizeInterval); // Stop het interval voor randomizeBars
+        clearInterval(gameInterval);
+        clearInterval(randomizeInterval);
     } else {
         pauseMenu.style.display = 'none';
-        gameInterval = setInterval(decreaseBars, 5000); // Herstart het interval voor decreaseBars
-        randomizeInterval = setInterval(randomizeBars, 1500); // Herstart het interval voor randomizeBars
+        gameInterval = setInterval(decreaseBars, 5000);
+        randomizeInterval = setInterval(randomizeBars, 1500);
     }
 }
 
 function goToHome() {
-    window.location.href = 'THome.html'; 
+    window.location.href = 'THome.html';
 }
 
 function resumeGame() {
-    togglePause(); 
+    togglePause();
 }
 
 document.addEventListener('keydown', (event) => {
@@ -30,34 +43,20 @@ document.addEventListener('keydown', (event) => {
     }
 });
 
-let hunger = 10;
-let energy = 10;
-let happiness = 10;
-let feedCount = 0;
-let playCount = 0;
-let sleepCount = 0;
-
-let audio = new Audio('background-music.mp3'); 
-audio.loop = true; 
-
-const musicPreference = localStorage.getItem('musicPreference');
-if (musicPreference === 'yes') {
-    audio.play(); 
-}
-
+// ==================== Audio Management ====================
 function setMusicPreference(preference) {
     localStorage.setItem('musicPreference', preference);
     if (preference === 'yes') {
-        audio.play(); 
+        audio.play();
     } else {
-        audio.pause(); 
+        audio.pause();
     }
 }
 
 function toggleMute() {
     if (audio.muted) {
         audio.muted = false;
-        document.getElementById('mute-icon').src = 'unmute-icon.png'; 
+        document.getElementById('mute-icon').src = 'unmute-icon.png';
     } else {
         audio.muted = true;
         document.getElementById('mute-icon').src = 'volume-mute.png';
@@ -78,23 +77,11 @@ window.onload = () => {
         `;
         document.body.appendChild(musicModal);
         musicModal.style.display = 'block';
-        localStorage.setItem('musicPromptShown', 'true'); 
+        localStorage.setItem('musicPromptShown', 'true');
     }
 };
 
-function unlockAchievement(achievementText) {
-    const achievementList = document.getElementById('achievement-list');
-    const achievements = achievementList.getElementsByTagName('li');
-
-    for (let achievement of achievements) {
-        if (achievement.textContent.includes(achievementText)) {
-            achievement.classList.remove('locked');
-            achievement.classList.add('unlocked');
-            achievement.textContent = achievement.textContent.replace('🔒 ', '');
-        }
-    }
-}
-
+// ==================== Tamagotchi Management ====================
 function updateBars() {
     document.getElementById('hunger-bar').style.width = hunger * 10 + '%';
     document.getElementById('hunger-value').textContent = hunger;
@@ -124,22 +111,25 @@ function checkGameOver() {
     if (hunger === 0 || energy === 0 || happiness === 0) {
         document.getElementById('game-over').style.display = 'block';
         clearInterval(gameInterval);
-        clearInterval(randomizeInterval); // Stop ook het randomizeBars-interval bij game over
+        clearInterval(randomizeInterval);
     }
 }
 
 function feed() {
+    let eatSound = new Audio('eating-chocolate-67566.mp3');
+    eatSound.play();
+
+    setTimeout(() => {
+        eatSound.pause();
+        eatSound.currentTime = 0;
+    }, 1000);
+
     hunger = Math.min(hunger + 1, 10);
     feedCount++;
-    if (feedCount === 1) {
-        unlockAchievement('First Meal');
-    }
-    if (feedCount === 10) {
-        unlockAchievement('Hungry No More');
-    }
-    if (feedCount === 20) {
-        unlockAchievement('Master Chef');
-    }
+    if (feedCount === 1) unlockAchievement('First Meal');
+    if (feedCount === 10) unlockAchievement('Hungry No More');
+    if (feedCount === 20) unlockAchievement('Master Chef');
+
     document.getElementById('tamagotchi-image').src = 'EatTM.png';
     setTimeout(() => {
         document.getElementById('tamagotchi-image').src = 'StartTM.png';
@@ -153,15 +143,10 @@ function play() {
         happiness = Math.min(happiness + 1, 10);
         energy = Math.max(energy - 1, 0);
         playCount++;
-        if (playCount === 1) {
-            unlockAchievement('Playtime Beginner');
-        }
-        if (playCount === 10) {
-            unlockAchievement('Playtime Pro');
-        }
-        if (playCount === 20) {
-            unlockAchievement('Playtime Champion');
-        }
+        if (playCount === 1) unlockAchievement('Playtime Beginner');
+        if (playCount === 10) unlockAchievement('Playtime Pro');
+        if (playCount === 20) unlockAchievement('Playtime Champion');
+
         document.getElementById('tamagotchi-image').src = 'PlayTM.png';
         setTimeout(() => {
             document.getElementById('tamagotchi-image').src = 'StartTM.png';
@@ -172,17 +157,20 @@ function play() {
 }
 
 function sleep() {
+    let sleepSound = new Audio('snoring-42710.mp3');
+    sleepSound.play();
+
+    setTimeout(() => {
+        sleepSound.pause();
+        sleepSound.currentTime = 0;
+    }, 1000);
+
     energy = Math.min(energy + 2, 10);
     sleepCount++;
-    if (sleepCount === 1) {
-        unlockAchievement('Good Night\'s Sleep');
-    }
-    if (sleepCount === 10) {
-        unlockAchievement('Sleepyhead');
-    }
-    if (sleepCount === 20) {
-        unlockAchievement('Sleep Master');
-    }
+    if (sleepCount === 1) unlockAchievement('Good Night\'s Sleep');
+    if (sleepCount === 10) unlockAchievement('Sleepyhead');
+    if (sleepCount === 20) unlockAchievement('Sleep Master');
+
     document.getElementById('tamagotchi-image').src = 'SleepTM.png';
     setTimeout(() => {
         document.getElementById('tamagotchi-image').src = 'StartTM.png';
@@ -198,9 +186,10 @@ function retry() {
     updateBars();
     document.getElementById('game-over').style.display = 'none';
     gameInterval = setInterval(decreaseBars, 5000);
-    randomizeInterval = setInterval(randomizeBars, 1500); // Herstart ook het randomizeBars-interval
+    randomizeInterval = setInterval(randomizeBars, 1500);
 }
 
+// ==================== UI Management ====================
 function updateChat() {
     const chat = document.getElementById('tamagotchi-chat');
     if (hunger <= 3) {
@@ -220,6 +209,25 @@ function updateChat() {
     }
 }
 
+function toggleAchievements() {
+    const achievementsSection = document.querySelector('.achievements');
+    achievementsSection.classList.toggle('hidden');
+}
+
+function unlockAchievement(achievementText) {
+    const achievementList = document.getElementById('achievement-list');
+    const achievements = achievementList.getElementsByTagName('li');
+
+    for (let achievement of achievements) {
+        if (achievement.textContent.includes(achievementText)) {
+            achievement.classList.remove('locked');
+            achievement.classList.add('unlocked');
+            achievement.textContent = achievement.textContent.replace('🔒 ', '✅ ');
+        }
+    }
+}
+
+// ==================== Initialisatie ====================
 updateBars();
 gameInterval = setInterval(decreaseBars, 5000);
-randomizeInterval = setInterval(randomizeBars, 1500); // Start het randomizeBars-interval   
+randomizeInterval = setInterval(randomizeBars, 1500);
